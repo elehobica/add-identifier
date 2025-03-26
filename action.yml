@@ -1,0 +1,56 @@
+#------------------------------------------------------
+# Copyright (c) 2025, Elehobica
+# Released under the BSD-2-Clause
+# refer to https://opensource.org/licenses/BSD-2-Clause
+#------------------------------------------------------
+
+name: 'Add-Identifier'
+author: 'elehobica'
+description: 'Add identifier to deliverables'
+branding:
+  icon: 'paperclip'
+  color: 'white'
+
+inputs:
+  paths:
+    description: 'Paths to be processed'
+    required: true
+    default: .
+  exts:
+    description: 'target extentions'
+    required: true
+    default: '.bin .hex'
+  identifier:
+    description: 'identifier to add'
+    required: true
+    default: 'identifier'
+  run_number_offset:
+    description: 'Offset to add run-number'
+    required: false
+    default: 0
+  omit_run_number_for_tag:
+    description: 'Omit run-number for tag'
+    required: false
+    default: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: step1
+      run: |
+        AddIdentifier=-${{inputs.identifier}}-${GITHUB_REF_NAME/\//}
+        Number=$(($GITHUB_RUN_NUMBER + ${{inputs.run_number_offset}}))
+        if [[ ${{inputs.omit_run_number_for_tag}} == "false" || $GITHUB_REF_TYPE == "branch" ]]; then
+          AddIdentifier=$AddIdentifier-$Number
+        fi
+        CWD_ABS=`pwd`
+        for path in ${{inputs.paths}}; do
+          cd $CWD_ABS/$path
+          for ext in ${{inputs.exts}}; do
+            for file in *$ext; do
+              echo mv $file $(basename $file $ext)$AddIdentifier$ext
+              mv $file $(basename $file $ext)$AddIdentifier$ext
+            done
+          done
+        done
+      shell: bash

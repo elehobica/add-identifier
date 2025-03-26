@@ -1,0 +1,47 @@
+name: Test 1
+
+on: [push, pull_request]
+
+jobs:
+  build-pico:
+    env:
+      working_path: ./tests/blink
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: ${{env.working_path}}
+      - name: Build-pico
+        uses: elehobica/build-pico@v1
+        with:
+          path: ${{env.working_path}}
+      - name: add-identifier
+        uses: elehobica/add-identifier@main
+        with:
+          paths: ${{env.working_path}}/build
+          exts: .elf .uf2
+          identifier: pico
+          run_number_offset: 100
+      - name: Build-pico2
+        uses: elehobica/build-pico@v1
+        with:
+          path: ${{env.working_path}}
+          build: build2
+          platform: rp2350
+          board: pico2
+      - name: add-identifier
+        uses: elehobica/add-identifier@main
+        with:
+          paths: ${{env.working_path}}/build2
+          exts: .elf .uf2
+          identifier: pico2
+          run_number_offset: 200
+          omit_run_number_for_tag: false
+      - name: Upload production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-binaries
+          path: |
+            ${{env.working_path}}/build*/*.uf2
+            ${{env.working_path}}/build*/*.elf
