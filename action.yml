@@ -24,6 +24,10 @@ inputs:
     description: 'identifier to add'
     required: true
     default: 'identifier'
+  output_path:
+    description: 'Output path'
+    required: false
+    default: ''
   run_number_offset:
     description: 'Offset to add run-number'
     required: false
@@ -40,16 +44,22 @@ runs:
       run: |
         AddIdentifier=-${{inputs.identifier}}-${GITHUB_REF_NAME/\//}
         Number=$(($GITHUB_RUN_NUMBER + ${{inputs.run_number_offset}}))
-        if [[ ${{inputs.omit_run_number_for_tag}} == "false" || $GITHUB_REF_TYPE == "branch" ]]; then
+        if [[ ${{inputs.omit_run_number_for_tag}} != "true" || $GITHUB_REF_TYPE == "branch" ]]; then
           AddIdentifier=$AddIdentifier-$Number
         fi
-        CWD_ABS=`pwd`
+        CWD_ABS=$(pwd)
+        if [ -z "${{inputs.output_path}}" ]; then
+          OUT_PATH=""
+        else
+          mkdir -p ${{inputs.output_path}} && cd ${{inputs.output_path}}
+          OUT_PATH=$(pwd)/
+        fi
         for path in ${{inputs.paths}}; do
           cd $CWD_ABS/$path
           for ext in ${{inputs.exts}}; do
             for file in *$ext; do
-              echo mv $file $(basename $file $ext)$AddIdentifier$ext
-              mv $file $(basename $file $ext)$AddIdentifier$ext
+              echo mv $file $OUT_PATH$(basename $file $ext)$AddIdentifier$ext
+              mv $file $OUT_PATH$(basename $file $ext)$AddIdentifier$ext
             done
           done
         done
