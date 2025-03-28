@@ -11,6 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          submodules: recursive
           sparse-checkout: ${{env.working_path}}
       - name: Build-pico
         uses: elehobica/build-pico@v1
