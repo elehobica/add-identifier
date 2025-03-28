@@ -50,6 +50,7 @@ If same condidtion is given except for the tag _1.0.0_ not the branch, the resul
 | exts | Ext(s) for the files to add identifier. Multiple designations possible by separating with ' ' | .bin .hex | true |
 | identifier | Identifier to add | identifier | true |
 | output_path | Output file directory for renamed file. '' to keep same directory.  | '' | false |
+| copy | Copy files instead of moving | false | false |
 | run_number_offset | Offset for run-number | 0 | false |
 | omit_run_number_for_tag | Omit run-number for _tag_ target (true or false) | true | false |
 

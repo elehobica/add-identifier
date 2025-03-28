@@ -38,6 +38,7 @@ jobs:
           exts: .elf .uf2
           identifier: pico2
           output_path: Release
+          copy: true
           run_number_offset: 200
           omit_run_number_for_tag: false
       - name: Upload production artifacts

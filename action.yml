@@ -28,6 +28,10 @@ inputs:
     description: 'Output path'
     required: false
     default: ''
+  copy:
+    description: 'Copy files instead of moving to output path'
+    required: false
+    default: false
   run_number_offset:
     description: 'Offset to add run-number'
     required: false
@@ -54,12 +58,17 @@ runs:
           mkdir -p ${{inputs.output_path}} && cd ${{inputs.output_path}}
           OUT_PATH=$(pwd)/
         fi
+        if [[ ${{inputs.copy}} == "true" ]]; then
+          CMD="cp -p"
+        else
+          CMD="mv"
+        fi
         for path in ${{inputs.paths}}; do
           cd $CWD_ABS/$path
           for ext in ${{inputs.exts}}; do
             for file in *$ext; do
-              echo mv $file $OUT_PATH$(basename $file $ext)$AddIdentifier$ext
-              mv $file $OUT_PATH$(basename $file $ext)$AddIdentifier$ext
+              echo $CMD $file $OUT_PATH$(basename $file $ext)$AddIdentifier$ext
+              $CMD $file $OUT_PATH$(basename $file $ext)$AddIdentifier$ext
             done
           done
         done
