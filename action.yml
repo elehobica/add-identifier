@@ -30,6 +30,7 @@ inputs:
     default: ''
   copy:
     description: 'Copy files instead of moving to output path'
+    type: boolean
     required: false
     default: false
   run_number_offset:
@@ -38,6 +39,7 @@ inputs:
     default: 0
   omit_run_number_for_tag:
     description: 'Omit run-number for tag'
+    type: boolean
     required: false
     default: true
 
