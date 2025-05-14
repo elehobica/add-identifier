@@ -20,8 +20,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          repository: elehobica/${{ matrix.project }}
+          path: ${{ env.working_path }}
           submodules: recursive
-          sparse-checkout: ${{ env.working_path }}
       - name: Build-pico
         uses: elehobica/build-pico@v1
         with:

@@ -1,3 +1,0 @@
-[submodule "tests/blink"]
-	path = tests/blink
-	url = https://github.com/elehobica/blink.git
